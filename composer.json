@@ -1,5 +1,6 @@
 {
-  "name": "tasoft/phpstorm-template",
+  "name": "skyline/api",
+  "description": "The Skyline API package provides an action controller to manager api requests",
   "license": "BSD-3-Clause",
   "minimum-stability": "dev",
   "authors": [
