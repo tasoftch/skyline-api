@@ -8,7 +8,7 @@ $ composer require skyline/api
 
 You may also be interested on skyline/component-api which defines several javascript routines to access the api.
 
-##Usage
+## Usage
 ````php
 class MyAPIActionController extends AbstractAPIActionController {
     // Routing to the action is done by default in the routing configuration
