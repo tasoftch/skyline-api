@@ -40,7 +40,7 @@ use Skyline\API\Exception\APIException;
 use Skyline\API\Exception\DeniedCrossOriginRequestException;
 use Skyline\API\Exception\DeniedRequestException;
 use Skyline\Application\Controller\AbstractActionController;
-use Skyline\Application\Service\CORSService;
+use Skyline\Kernel\Service\CORSService;
 use Skyline\Kernel\Service\Error\AbstractErrorHandlerService;
 use Skyline\Kernel\Service\SkylineServiceManager;
 use Skyline\Render\Info\RenderInfoInterface;
