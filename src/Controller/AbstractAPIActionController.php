@@ -180,7 +180,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
                 // Resolve cross origin request
                 if($this->acceptsCrossOriginRequest($request)) {
                     /** @var Response $response */
-                    $response = $renderInfo->get( RenderInfoInterface::INFO_RESPONSE );
+                    $response = $this->response;
                     if($response instanceof Response) {
                         $requireCredentials = false;
                         $theOrigin = "*";
