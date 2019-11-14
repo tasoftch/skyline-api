@@ -181,6 +181,10 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
                 if($this->acceptsCrossOriginRequest($request)) {
                     /** @var Response $response */
                     $response = $this->response;
+
+                    // Make the render info renderable, even if the action controller did not specify anything
+                    $renderInfo->set( RenderInfoInterface::INFO_RESPONSE, $response );
+
                     if($response instanceof Response) {
                         $requireCredentials = false;
                         $theOrigin = "*";
