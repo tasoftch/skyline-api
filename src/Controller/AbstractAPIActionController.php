@@ -98,17 +98,19 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
     }
 
     /**
-     * If inside an api request an exception occures, the controller may decide how to handle it.
+     * If inside an api request an exception occurs, the controller may decide how to handle it.
      * Without doing anything, the default behaviour of the Skyline Application will handle it.
      *
      * @param Exception $exception
      * @param $actionDescription
      * @return bool Skyline will treat a returning true as exception handled, don't do anything and continue.
      */
-    abstract protected function handleException(Exception $exception, $actionDescription): bool;
+    protected function handleException(Exception $exception, $actionDescription): bool {
+        return false;
+    }
 
     /**
-     * Again if inside an api request an error occurs, the controller mey decide before Skyline does.
+     * Again if inside an api request an error occurs, the controller may decide before Skyline does.
      *
      * @param int $code
      * @param $message
@@ -117,7 +119,9 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
      * @return bool
      * @see AbstractAPIActionController::handleException()
      */
-    abstract protected function handleError(int $code, $message, $file, $line): bool;
+    protected function handleError(int $code, $message, $file, $line): bool {
+        return false;
+    }
 
     /**
      * If the request is a preflight, this method gets called how to handle it
