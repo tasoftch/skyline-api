@@ -44,6 +44,7 @@ use Skyline\Kernel\Service\CORSService;
 use Skyline\Kernel\Service\Error\AbstractErrorHandlerService;
 use Skyline\Kernel\Service\SkylineServiceManager;
 use Skyline\Render\Info\RenderInfoInterface;
+use Skyline\Render\Template\TemplateInterface;
 use Skyline\Router\Description\ActionDescriptionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -132,7 +133,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
      */
     protected function handlePreflightRequest(Request $request, ActionDescriptionInterface $actionDescription, RenderInfoInterface $renderInfo) {
         /** @var Response $response */
-        $response = $renderInfo->get( RenderInfoInterface::INFO_RESPONSE );
+        $response = $this->response;
 
         $eventManager = SkylineServiceManager::getEventManager();
         $eventManager->trigger(SKY_EVENT_TEAR_DOWN);
@@ -182,9 +183,6 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
                     /** @var Response $response */
                     $response = $this->response;
 
-                    // Make the render info renderable, even if the action controller did not specify anything
-                    $renderInfo->set( RenderInfoInterface::INFO_RESPONSE, $response );
-
                     if($response instanceof Response) {
                         $requireCredentials = false;
                         $theOrigin = "*";
@@ -208,6 +206,24 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
                         if( $this->isPreflightRequest($request) ) {
                             $this->handlePreflightRequest($request, $actionDescription, $renderInfo);
                         }
+
+                        // Make the render info renderable
+                        $renderInfo->set(RenderInfoInterface::INFO_TEMPLATE, new class implements TemplateInterface {
+                            public function getID()
+                            {
+                                return "";
+                            }
+
+                            public function getName(): string
+                            {
+                                return "";
+                            }
+
+                            public function getRenderable(): callable
+                            {
+                                return function(){};
+                            }
+                        });
                     } else {
                         throw new APIException("Response expected in render info", 500);
                     }
