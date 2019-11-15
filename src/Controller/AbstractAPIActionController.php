@@ -36,9 +36,15 @@ namespace Skyline\API\Controller;
 
 
 use Exception;
+use Skyline\API\Error\Deprecated;
+use Skyline\API\Error\Fatal;
+use Skyline\API\Error\Notice;
+use Skyline\API\Error\Warning;
 use Skyline\API\Exception\APIException;
 use Skyline\API\Exception\DeniedCrossOriginRequestException;
 use Skyline\API\Exception\DeniedRequestException;
+use Skyline\API\Render\Model\APIModel;
+use Skyline\API\Render\Model\APIModelInterface;
 use Skyline\Application\Controller\AbstractActionController;
 use Skyline\Kernel\Service\CORSService;
 use Skyline\Kernel\Service\Error\AbstractErrorHandlerService;
@@ -107,7 +113,10 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
      * @return bool Skyline will treat a returning true as exception handled, don't do anything and continue.
      */
     protected function handleException(Exception $exception, $actionDescription): bool {
-        return false;
+        $error = new \Skyline\API\Error\Exception($exception->getMessage(), $exception->getCode(), $exception->getFile(), $exception->getLine());
+        $error->setException($exception);
+        $this->getModel()->addError($error);
+        return true;
     }
 
     /**
@@ -121,7 +130,47 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
      * @see AbstractAPIActionController::handleException()
      */
     protected function handleError(int $code, $message, $file, $line): bool {
-        return false;
+        $level = AbstractErrorHandlerService::detectErrorLevel($code);
+        switch ($level) {
+            case AbstractErrorHandlerService::NOTICE_ERROR_LEVEL:
+                $class = Notice::class; break;
+            case AbstractErrorHandlerService::DEPRECATED_ERROR_LEVEL:
+                $class = Deprecated::class; break;
+            case AbstractErrorHandlerService::WARNING_ERROR_LEVEL:
+                $class = Warning::class; break;
+            default:
+                $class = Fatal::class;
+        }
+
+        $this->getModel()->addError(new $class($message, $code, $file, $line));
+
+        return $level >= AbstractErrorHandlerService::FATAL_ERROR_LEVEL ? false : true;
+    }
+
+    /**
+     * Gets or creates the API model
+     *
+     * @return APIModelInterface
+     */
+    protected function getModel(): APIModelInterface {
+        $model = $this->getRenderInfo()->get( RenderInfoInterface::INFO_MODEL );
+        if(NULL === $model)
+            $model = $this->makeAPIModel();
+
+        if($model instanceof APIModelInterface) {
+            $this->getRenderInfo()->set(RenderInfoInterface::INFO_MODEL, $model);
+            return $model;
+        }
+        throw new APIException("Model used by API controller must be of class APIModelInterface");
+    }
+
+    /**
+     * Subclass this method to make a different api model
+     *
+     * @return APIModelInterface
+     */
+    protected function makeAPIModel(): APIModelInterface {
+        return new APIModel();
     }
 
     /**
@@ -225,7 +274,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
                             }
                         });
                     } else {
-                        throw new APIException("Response expected in render info", 500);
+                        throw new APIException("Response expected in service management", 500);
                     }
                 } else {
                     $e = new DeniedCrossOriginRequestException("Cross origin requests are not permitted for this action", 403);

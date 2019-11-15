@@ -16,8 +16,14 @@
   },
   "require" : {
     "php": "^7.2",
+    "ext-json": "*",
+    "ext-dom": "*",
     "skyline/core-application": "dev-master",
-    "symfony/http-foundation": "dev-master"
+    "symfony/http-foundation": "dev-master",
+    "ext-simplexml": "*"
+  },
+  "suggest": {
+    "ext-simplexml": "To enable "
   },
   "require-dev": {
     "phpunit/phpunit": "^6"
