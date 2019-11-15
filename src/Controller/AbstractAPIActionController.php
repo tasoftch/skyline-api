@@ -144,7 +144,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
 
         $this->getModel()->addError(new $class($message, $code, $file, $line));
 
-        return $level >= AbstractErrorHandlerService::FATAL_ERROR_LEVEL ? false : true;
+        return true;
     }
 
     /**
