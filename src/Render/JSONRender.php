@@ -35,7 +35,10 @@
 namespace Skyline\API\Render;
 
 
+use Skyline\API\Error\Deprecated;
+use Skyline\API\Error\Exception;
 use Skyline\API\Error\Fatal;
+use Skyline\API\Error\Warning;
 use Skyline\API\Render\Model\APIModelInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -59,6 +62,20 @@ class JSONRender extends AbstractOutputRender
 
         foreach($model->getErrors() as $error) {
             $data["errors"][] = [
+                'level' => (function() use ($error) {
+                    switch (get_class($error)) {
+                        case Exception::class:
+                            return "exception";
+                        case Fatal::class:
+                            return "error";
+                        case Warning::class:
+                            return "warning";
+                        case Deprecated::class:
+                            return "deprecated";
+                        default:
+                            return "notice";
+                    }
+                })(),
                 'code' => $error->getCode(),
                 'message' => $error->getMessage(),
                 'file' => $error->getFile(),
