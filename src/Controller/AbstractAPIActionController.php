@@ -54,6 +54,7 @@ use Skyline\Render\Template\TemplateInterface;
 use Skyline\Router\Description\ActionDescriptionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 abstract class AbstractAPIActionController extends AbstractActionController implements ActionControllerInterface
 {
@@ -108,11 +109,11 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
      * If inside an api request an exception occurs, the controller may decide how to handle it.
      * Without doing anything, the default behaviour of the Skyline Application will handle it.
      *
-     * @param Exception $exception
+     * @param Throwable $exception
      * @param $actionDescription
      * @return bool Skyline will treat a returning true as exception handled, don't do anything and continue.
      */
-    protected function handleException(Exception $exception, $actionDescription): bool {
+    protected function handleException(Throwable $exception, $actionDescription): bool {
         $error = new \Skyline\API\Error\Exception($exception->getMessage(), $exception->getCode(), $exception->getFile(), $exception->getLine());
         $error->setException($exception);
         $this->getModel()->addError($error);
@@ -284,7 +285,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
             }
 
             parent::performAction($actionDescription, $renderInfo);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             if(!$this->handleException($exception, $actionDescription))
                 throw $exception;
         } finally {
