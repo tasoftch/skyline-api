@@ -50,7 +50,7 @@ use Skyline\Kernel\Service\CORSService;
 use Skyline\Kernel\Service\Error\AbstractErrorHandlerService;
 use Skyline\Kernel\Service\SkylineServiceManager;
 use Skyline\Render\Info\RenderInfoInterface;
-use Skyline\Render\Template\TemplateInterface;
+use Skyline\Render\Template\NullTemplate;
 use Skyline\Router\Description\ActionDescriptionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -200,6 +200,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
     /**
      * @inheritDoc
      * @throws Exception
+     * @throws Throwable
      */
     public function performAction(ActionDescriptionInterface $actionDescription, RenderInfoInterface $renderInfo)
     {
@@ -258,22 +259,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
                         }
 
                         // Make the render info renderable
-                        $renderInfo->set(RenderInfoInterface::INFO_TEMPLATE, new class implements TemplateInterface {
-                            public function getID()
-                            {
-                                return "";
-                            }
-
-                            public function getName(): string
-                            {
-                                return "";
-                            }
-
-                            public function getRenderable(): callable
-                            {
-                                return function(){};
-                            }
-                        });
+                        $renderInfo->set(RenderInfoInterface::INFO_TEMPLATE, new NullTemplate());
                     } else {
                         throw new APIException("Response expected in service management", 500);
                     }
