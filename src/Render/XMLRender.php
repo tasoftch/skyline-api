@@ -44,7 +44,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class XMLRender extends AbstractOutputRender
 {
-    const XML_RENDER_NAME = 'xml-render';
+    const RENDER_NAME = 'xml-render';
     const NUMBER_TAG_NAME = 'ITEM';
 
     public function getContentType(): string

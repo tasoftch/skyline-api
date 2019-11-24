@@ -44,7 +44,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class JSONRender extends AbstractOutputRender
 {
-    const JSON_RENDER_NAME = 'json-render';
+    const RENDER_NAME = 'json-render';
 
     public function getContentType(): string
     {

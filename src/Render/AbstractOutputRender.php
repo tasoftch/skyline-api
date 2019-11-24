@@ -46,6 +46,8 @@ use TASoft\Service\ServiceForwarderTrait;
 
 abstract class AbstractOutputRender implements OutputRenderInterface
 {
+    const RENDER_NAME = '';
+
     use ServiceForwarderTrait;
 
     /** @var Request */

@@ -36,36 +36,24 @@ namespace Skyline\API\Render;
 
 
 use Skyline\API\Render\Model\APIModelInterface;
-use Symfony\Component\HttpFoundation\Response;
+use Skyline\Render\Info\RenderInfoInterface;
 
-class PlainTextRender extends AbstractOutputRender
+class PartialTemplateRender extends AbstractOutputRender
 {
-    const RENDER_NAME = 'plain-text';
-
-    public function getContentType(): string
-    {
-        return "text/plain";
-    }
+    const RENDER_NAME = 'partial-template-render';
 
     protected function renderModel(APIModelInterface $model)
     {
-        $content = "";
-        foreach($model->yieldValue() as $key => $value) {
-            if(!$key)
-                $content .= "$value\n";
-            else
-                $content .= "$key=$value\n";
-        }
+        // Not called
+    }
 
-        if($errors = $model->getErrors()) {
-            $content .= "*** ERRORS ***\n";
-            foreach($errors as $error) {
-                $content .= sprintf("%s at %s on line %s", $error->getMessage(), $error->getFile(), $error->getLine());
-            }
-        }
+    public function getContentType(): string
+    {
+        return "text/html";
+    }
 
-        $response = $this->getResponse() ?: new Response();
-        $response->setContent( $content );
-        $this->setResponse($response);
+    public function render(RenderInfoInterface $renderInfo)
+    {
+
     }
 }
