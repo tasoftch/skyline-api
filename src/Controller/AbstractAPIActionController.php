@@ -46,6 +46,7 @@ use Skyline\API\Exception\DeniedRequestException;
 use Skyline\API\Render\Model\APIModel;
 use Skyline\API\Render\Model\APIModelInterface;
 use Skyline\Application\Controller\AbstractActionController;
+use Skyline\Application\Exception\ActionCancelledException;
 use Skyline\Kernel\Service\CORSService;
 use Skyline\Kernel\Service\Error\AbstractErrorHandlerService;
 use Skyline\Kernel\Service\SkylineServiceManager;
@@ -271,6 +272,8 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
             }
 
             parent::performAction($actionDescription, $renderInfo);
+        } catch (ActionCancelledException $exception) {
+            throw $exception;
         } catch (Throwable $exception) {
             if(!$this->handleException($exception, $actionDescription))
                 throw $exception;
