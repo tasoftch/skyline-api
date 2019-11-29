@@ -39,13 +39,13 @@ use Skyline\API\Render\XMLRender;
 use Skyline\Render\CompiledRender;
 
 return [
-    PlainTextRender::PLAIN_TEXT_RENDER_NAME => [
+    PlainTextRender::RENDER_NAME => [
         CompiledRender::CONFIG_RENDER_CLASS => PlainTextRender::class
     ],
-    JSONRender::JSON_RENDER_NAME => [
+    JSONRender::RENDER_NAME => [
         CompiledRender::CONFIG_RENDER_CLASS => JSONRender::class
     ],
-    XMLRender::XML_RENDER_NAME => [
+    XMLRender::RENDER_NAME => [
         CompiledRender::CONFIG_RENDER_CLASS => XMLRender::class
     ]
 ];
