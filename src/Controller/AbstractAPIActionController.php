@@ -93,6 +93,15 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
     }
 
     /**
+     * Specifies a default render name
+     *
+     * @return string|null
+     */
+    protected function getDefaultRenderName(): ?string {
+        return NULL;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getAcceptedHTTPHeaders(Request $request): ?array {
@@ -207,6 +216,9 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
     {
         try {
             /** @var Request $request */
+            $this->renderInfo = $renderInfo;
+            if($rnd = $this->getDefaultRenderName())
+                $this->preferRender($rnd);
 
             set_error_handler(function(int $code, string $message, $file, $line) {
                 if(error_reporting() & $code) {
