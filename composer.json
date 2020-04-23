@@ -2,7 +2,6 @@
   "name": "skyline/api",
   "description": "The Skyline API package provides an action controller to manager api requests",
   "license": "BSD-3-Clause",
-  "minimum-stability": "dev",
   "authors": [
     {
       "name": "Thomas Abplanalp",
@@ -18,12 +17,12 @@
     "php": "^7.2",
     "ext-json": "*",
     "ext-dom": "*",
-    "skyline/core-application": "dev-master",
-    "symfony/http-foundation": "dev-master",
+    "skyline/core-application": "^0.8",
+    "symfony/http-foundation": "^5.0",
     "ext-simplexml": "*"
   },
   "suggest": {
-    "ext-simplexml": "To enable "
+    "ext-simplexml": "To enable simple xml model elements"
   },
   "require-dev": {
     "phpunit/phpunit": "^6"
