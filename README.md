@@ -44,7 +44,7 @@ class MyAPIActionController extends AbstractAPIActionController {
 
     // By version 0.8.5 this method must decide if the request must be verified.
     // This method gets called right before the main action is handled.
-    protected function mustCheckCSRF(Request $request): bool {
+    protected function enableCsrfCheck(Request $request): bool {
     	if(strcasecmp($request->getMethod(), 'GET') === false)
     		return true;
         return false;
