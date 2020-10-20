@@ -64,7 +64,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
      */
     public function acceptsAnonymousRequest(Request $request): bool
     {
-        return SkyGetRunModes() > SKY_RUNMODE_PRODUCTION ? true : false;
+        return SkyGetRunModes() > SKY_RUNMODE_PRODUCTION;
     }
 
     /**
@@ -112,7 +112,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
      * @inheritDoc
      */
     public function isPreflightRequest(Request $request): bool {
-        return strcasecmp( $request->getMethod(), 'OPTIONS' ) === 0 ? true : false;
+        return strcasecmp( $request->getMethod(), 'OPTIONS' ) === 0;
     }
 
     /**
@@ -266,13 +266,6 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
                             $headers = array_map(function($a) { return strtoupper($a); }, $headers);
                             $response->headers->set("Access-Control-Allow-Headers", implode(",", $headers), true);
                         }
-
-                        if( $this->isPreflightRequest($request) ) {
-                            $this->handlePreflightRequest($request, $actionDescription, $renderInfo);
-                        }
-
-                        // Make the render info renderable
-                        $renderInfo->set(RenderInfoInterface::INFO_TEMPLATE, new NullTemplate());
                     } else {
                         throw new APIException("Response expected in service management", 500);
                     }
@@ -282,6 +275,13 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
                     throw $e;
                 }
             }
+
+			if( $this->isPreflightRequest($request) ) {
+				$this->handlePreflightRequest($request, $actionDescription, $renderInfo);
+			}
+
+			// Make the render info renderable
+			$renderInfo->set(RenderInfoInterface::INFO_TEMPLATE, new NullTemplate());
 
             parent::performAction($actionDescription, $renderInfo);
         } catch (ActionCancelledException $exception) {
