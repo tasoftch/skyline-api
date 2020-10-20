@@ -47,14 +47,19 @@ use Skyline\API\Render\Model\APIModel;
 use Skyline\API\Render\Model\APIModelInterface;
 use Skyline\Application\Controller\AbstractActionController;
 use Skyline\Application\Exception\ActionCancelledException;
+use Skyline\CMS\Security\Exception\CSRFMissmatchException;
 use Skyline\Kernel\Service\CORSService;
 use Skyline\Kernel\Service\Error\AbstractErrorHandlerService;
 use Skyline\Kernel\Service\SkylineServiceManager;
 use Skyline\Render\Info\RenderInfoInterface;
 use Skyline\Render\Template\NullTemplate;
 use Skyline\Router\Description\ActionDescriptionInterface;
+use Skyline\Security\CSRF\CSRFToken;
+use Skyline\Security\CSRF\CSRFTokenManager;
+use Skyline\Security\Exception\SecurityException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use TASoft\Service\ServiceManager;
 use Throwable;
 
 abstract class AbstractAPIActionController extends AbstractActionController implements ActionControllerInterface
@@ -184,6 +189,19 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
         return new APIModel();
     }
 
+	/**
+	 * This method gets called to verify if the request is valid against a csrf token.
+	 * By default this method requires csrf check for all requests except GET and OPTIONS
+	 *
+	 * @param Request $request
+	 * @return bool
+	 */
+    protected function enableCsrfCheck(Request $request): bool {
+    	if(strcasecmp($request->getMethod(), 'GET') === false)
+    		return true;
+    	return false;
+	}
+
     /**
      * If the request is a preflight, this method gets called how to handle it
      *
@@ -278,6 +296,21 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
 
 			if( $this->isPreflightRequest($request) ) {
 				$this->handlePreflightRequest($request, $actionDescription, $renderInfo);
+				exit();
+			}
+
+			if($this->enableCsrfCheck($request)) {
+				$csrf = ServiceManager::generalServiceManager()->get("CSRFManager");
+				$tn = ServiceManager::generalServiceManager()->getParameter("api.js.csrf-token-name");
+				if($csrf instanceof CSRFTokenManager) {
+					if(!$csrf->isTokenValid( $tk = new CSRFToken($tn, $request->request->get($tn)) )) {
+						$e = new CSRFMissmatchException("Request is invalid", 403);
+						$e->setToken($tk);
+						throw $e;
+					}
+				} else {
+					throw new SecurityException("No CSRF management defined in service manager, can not validate request", 403);
+				}
 			}
 
 			// Make the render info renderable

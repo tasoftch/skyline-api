@@ -25,6 +25,7 @@
     "ext-simplexml": "To enable simple xml model elements"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6"
+    "phpunit/phpunit": "^6",
+    "skyline/cms-security": "^0.8"
   }
 }
