@@ -318,7 +318,6 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
 
             parent::performAction($actionDescription, $renderInfo);
         } catch (ActionCancelledException $exception) {
-            throw $exception;
         } catch (Throwable $exception) {
             if(!$this->handleException($exception, $actionDescription))
                 throw $exception;
