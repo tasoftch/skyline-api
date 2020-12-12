@@ -129,7 +129,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
      * @return bool Skyline will treat a returning true as exception handled, don't do anything and continue.
      */
     protected function handleException(Throwable $exception, $actionDescription): bool {
-        $error = new \Skyline\API\Error\Exception($exception->getMessage(), $exception->getCode(), $exception->getFile(), $exception->getLine());
+        $error = new \Skyline\API\Error\Exception($exception->getMessage(), $exception->getCode()*1, $exception->getFile(), $exception->getLine());
         $error->setException($exception);
         $this->getModel()->addError($error);
         return true;
@@ -197,7 +197,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
 	 * @return bool
 	 */
     protected function enableCsrfCheck(Request $request): bool {
-    	if(strcasecmp($request->getMethod(), 'GET') === false)
+    	if(stripos($request->getMethod(), 'GET') === false)
     		return true;
     	return false;
 	}
@@ -299,6 +299,9 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
 				exit();
 			}
 
+			// Make the render info renderable
+			$renderInfo->set(RenderInfoInterface::INFO_TEMPLATE, new NullTemplate());
+
 			if($this->enableCsrfCheck($request)) {
 				$csrf = ServiceManager::generalServiceManager()->get("CSRFManager");
 				$tn = ServiceManager::generalServiceManager()->getParameter("api.js.csrf-token-name");
@@ -312,9 +315,6 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
 					throw new SecurityException("No CSRF management defined in service manager, can not validate request", 403);
 				}
 			}
-
-			// Make the render info renderable
-			$renderInfo->set(RenderInfoInterface::INFO_TEMPLATE, new NullTemplate());
 
             parent::performAction($actionDescription, $renderInfo);
         } catch (ActionCancelledException $exception) {
