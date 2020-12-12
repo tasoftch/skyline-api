@@ -34,6 +34,7 @@
 
 
 use Skyline\API\Render\JSONRender;
+use Skyline\API\Render\PartialTemplateRender;
 use Skyline\API\Render\PlainTextRender;
 use Skyline\API\Render\XMLRender;
 use Skyline\Render\CompiledRender;
@@ -47,5 +48,8 @@ return [
     ],
     XMLRender::RENDER_NAME => [
         CompiledRender::CONFIG_RENDER_CLASS => XMLRender::class
-    ]
+    ],
+	PartialTemplateRender::RENDER_NAME=>[
+		CompiledRender::CONFIG_RENDER_CLASS => PartialTemplateRender::class
+	]
 ];
