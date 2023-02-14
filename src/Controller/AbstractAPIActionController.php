@@ -258,7 +258,7 @@ abstract class AbstractAPIActionController extends AbstractActionController impl
                 throw $e;
             }
 
-            CORSService::getHostOfRequest($request, $serverHost);
+			$serverHost = CORSService::getHostOfRequest($request);
             if($originHost != $serverHost) {
                 // Resolve cross origin request
                 if($this->acceptsCrossOriginRequest($request)) {
