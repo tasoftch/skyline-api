@@ -33,6 +33,7 @@
  */
 
 
+use Skyline\API\Render\HTMLRender;
 use Skyline\API\Render\JSONRender;
 use Skyline\API\Render\PartialTemplateRender;
 use Skyline\API\Render\PlainTextRender;
@@ -51,5 +52,8 @@ return [
     ],
 	PartialTemplateRender::RENDER_NAME=>[
 		CompiledRender::CONFIG_RENDER_CLASS => PartialTemplateRender::class
+	],
+	HTMLRender::RENDER_NAME => [
+		CompiledRender::CONFIG_RENDER_CLASS => HTMLRender::class
 	]
 ];

@@ -38,7 +38,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class HTMLRender extends AbstractOutputRender
 {
-	const RENDER_NAME = 'json-render';
+	const RENDER_NAME = 'html-part-render';
 
 	protected function renderModel(APIModelInterface $model)
 	{
