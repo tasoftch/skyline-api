@@ -73,6 +73,11 @@ class HTMLModelAdapter
 		return $this;
 	}
 
+	public function makeAutoIncludeHeader(): void
+	{
+		$this->addHeader("Skyline-Autoload", 1);
+	}
+
 	public function beginOutputCapture(): void
 	{
 		ob_start();
